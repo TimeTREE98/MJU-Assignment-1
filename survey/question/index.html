@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>재수냐 편입이냐</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.slim.js"
+      integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="container">
+        <div class="main">
+          <br />
+          <div id="questionSection">
+            <div class="questionBox">
+              <p>
+                -
+                <span id="question_index"></span>
+                -
+              </p>
+              <p style="font-size: 1.5em" id="question_p"></p>
+            </div>
+            <br />
+            <div class="ynBox">
+              <div class="ynButton" onclick="yn_func('Y')">
+                <p class="ynText">네</p>
+              </div>
+              <div class="ynButton" onclick="yn_func('N')">
+                <p class="ynText">아니오</p>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div id="previous_div" style="display: none">
+            <p style="font-size: 1.3em">지난 질문 답변</p>
+            <div id="previous_list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    let now_index = 0;
+    const question_data = [
+      {
+        question: "현재 당신은 인서울 대학교에 재학 중이다.",
+        Y: -1,
+        N: 1,
+      },
+      {
+        question: "현재 당신은 입학한지 얼마 안되었다.",
+        Y: 1,
+        N: -1,
+      },
+      {
+        question: "현재 당신은 현재 전공이 잘 안맞는다고 느껴진다.",
+        Y: -1,
+        N: 1,
+      },
+      {
+        question: "현재 당신은 전공을 바꿔 다른 쪽으로 나아가보고자 한다.",
+        Y: -1,
+        N: 1,
+      },
+    ];
+    /*
+    현재 연산 관련 backend가 없기에 임의 점수를 data 단에 부여
+    로직 : Y N 점수를 다 합산,
+    음수에 가까움 > 재수 추천
+    양수에 가까움 > 편입 추천
+    0 일 경우? 그냥 아무것도 하지말고 학교 잘 다니자 ?
+    */
+    const previous_list = {};
+
+    window.onload = () => {
+      question_render(now_index);
+    };
+
+    // yn button click event ("yn" - ['Y', 'N'] enum)
+    const yn_func = (yn) => {
+      if (question_data[now_index + 1] === undefined) {
+        // not exist next quesion, score calcuate and render result
+        console.log("질문 없음");
+      } else {
+        previous_list[now_index] = yn;
+        previous_answer_render(now_index);
+        now_index += 1;
+        question_render();
+      }
+    };
+
+    // question_data render func
+    const question_render = () => {
+      document.getElementById("question_index").innerHTML = now_index + 1;
+      document.getElementById("question_p").innerHTML =
+        question_data[now_index].question;
+    };
+
+    // previous answer add func
+    const previous_answer_render = (index) => {
+      document.getElementById("previous_div").style.display = "";
+      // prepend 기능을 사용하기 위한 jquery import
+      $("#previous_list").prepend(
+        `<p>${index + 1}. ${question_data[index].question} - ${
+          previous_list[index] === "Y" ? "네" : "아니오"
+        }</p>`
+      );
+    };
+  </script>
+</html>
