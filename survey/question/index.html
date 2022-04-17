@@ -22,8 +22,11 @@
       <div class="container">
         <div class="main">
           <br />
+          <div id="result" class="whiteBox" style="display: none">
+            <p>결과값 렌더</p>
+          </div>
           <div id="questionSection">
-            <div class="questionBox">
+            <div class="whiteBox">
               <p>
                 -
                 <span id="question_index"></span>
@@ -92,7 +95,14 @@
     const yn_func = (yn) => {
       if (question_data[now_index + 1] === undefined) {
         // not exist next quesion, score calcuate and render result
-        console.log("질문 없음");
+        let score = 0;
+        const previousKey = Object.keys(previous_list);
+        for (let i = 0; i < previousKey.length; i++) {
+          score += question_data[previousKey[i]][previous_list[previousKey[i]]];
+        }
+        document.getElementById("questionSection").style.display = "none";
+        document.getElementById("result").style.display = "";
+        document.getElementById("result").innerHTML = `<p>결과값 ${score}</p>`;
       } else {
         previous_list[now_index] = yn;
         previous_answer_render(now_index);
